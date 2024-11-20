@@ -4,6 +4,7 @@
 #include <libopencm3/stm32/usart.h>
 #include <libopencm3/cm3/nvic.h>
 #include "ring_buf/ring_buf.hpp"
+#include <libopencm3/stm32/i2c.h>
 
 uint8_t c{'a'};
 Ring_buffer buf;
