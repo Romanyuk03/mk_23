@@ -24,7 +24,7 @@ void setup () {
     usart_enable(USART2);
 
     usart_enable_rx_interrupt(USART2);
-    nvic_enable_irq(NVIC_USART2_EXTI26_IRQ);   
+    nvic_enable_irq(NVIC_USART2_IRQ);   
 
     usart_enable(USART2);
 
@@ -67,7 +67,7 @@ int main () {
 //-------------------------------------------------------------------------------------------------------------
 void usart2_exti26_isr (void){
 
-    USART_RQR(USART2) &= ~(USART_RQR_RXFRQ);
+    USART_SR(USART2) &= ~(USART_SR_RXNE);
     buf.put(c = static_cast<uint8_t>(usart_recv(USART2)));
     gpio_toggle(GPIOE, GPIO11);
 
