@@ -40,7 +40,7 @@ void usart_setup(void) {
 void usart_send_string(const char *str) {
     while (*str) {
         while (!(USART_SR(USART2) & USART_SR_TXE)); // Ждем, пока TXE не станет 1
-        USART_DR(USART2) = *str++;
+        USART_DR(USART2) = *str++;  ///это отправка в юсарт можно ее использовать 
     }
 }
 
@@ -68,11 +68,11 @@ int main(void) {
     usart_setup(); // Настройка UART
     setup_timer(); // Настройка таймера
 
-    while (1) {
+    while (1) {    ////дописать включение светодиода   
         char buffer[50];
         // Преобразуем pulse_width в строку и отправляем по UART
         snprintf(buffer, sizeof(buffer), "Pulse Width: %lu\n", pulse_width);
-        usart_send_string(buffer);
+        usart_send_string(buffer);  /////вместо этого написать отправку числа 85 в юсарт 
         
         // Добавим небольшую задержку, чтобы избежать слишком частого вывода
         for (volatile int i = 0; i < 100000; i++);
