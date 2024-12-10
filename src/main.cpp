@@ -1,3 +1,4 @@
+
 #include <libopencm3/stm32/f4/rcc.h>
 #include <libopencm3/stm32/f4/gpio.h>
 #include <libopencm3/stm32/f4/timer.h>
@@ -5,12 +6,14 @@
 #include <libopencm3/stm32/f4/usart.h>
 #include <stdio.h>
 
-volatile uint32_t pulse_width = 1;
+volatile uint32_t pulse_width;
 
 void tim2_isr(void) {
     if (TIM_SR(TIM2) & TIM_SR_CC1IF) {
         pulse_width = TIM_CCR1(TIM2); // Считываем значение захвата
         TIM_SR(TIM2) &= ~TIM_SR_CC1IF; // Сбрасываем флаг прерывания
+        gpio_toggle(GPIOD, GPIO12); // Мигаем светодиодом при захвате
+        for (volatile int i = 0; i < 100000; i++);
    }
 }
 
@@ -74,22 +77,22 @@ void init_timer(void) {
 
     // Разрешаем прерывание от канала 1
     TIM_DIER(TIM2) |= TIM_DIER_CC1IE;   //разрешаем прерывание в самом таймере
-    nvic_enable_irq(NVIC_TIM2_IRQ);     // Разрешаем прерывание в NVIC
-
+    
     timer_enable_counter(TIM2);          // Запускаем таймер
+    nvic_enable_irq(NVIC_TIM2_IRQ);     // Разрешаем прерывание в NVIC
 }
 
 void read(void){
     char buffer[25];
     //tim2_isr();
-    
+    uint32_t current_pulse_width = pulse_width;    
 
-    uint32_t n = snprintf(buffer, sizeof(buffer), "Pulse Width: %lu\n\r ", pulse_width);
+    uint32_t n = snprintf(buffer, sizeof(buffer), "Pulse Width: %lu\n\r ", current_pulse_width);
     usart_send_string(buffer,n);            // Отправка ширины импульса по UART
 
     gpio_toggle(GPIOD, GPIO14);           // Мигаем светодиодом на GPIOD14
 
-    for (volatile int i = 0; i < 1000000; i++); // Задержка
+    for (volatile int i = 0; i < 100000; i++); // Задержка
 }
 
 int main(void) {
@@ -97,13 +100,13 @@ int main(void) {
     init_timer();   // Настройка таймера
     setup_LED();     // Инициализация светодиодов
     
+    
 
     while (1) {
         read();      // Чтение и отправка ширины импульса по UART
-        for (volatile int i = 0; i < 1000000; i++); // Задержка между отправками
+       
+        for (volatile int i = 0; i < 100000; i++); // Задержка между отправками
     }
 
     return 0;
 }
-
-
