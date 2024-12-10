@@ -31,6 +31,10 @@ set_target_properties(${PROJECT_NAME}
      CXX_EXTENSIONS NO
 )
 
+add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+     COMMAND cp ${PROJECT_NAME} firmware
+)
+
 
 #================================================================================
 set(PROG stlink)

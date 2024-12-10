@@ -1,0 +1,39 @@
+{
+  "version": 6,
+  "configurePresets": [
+  {
+    "name": "default",
+    "hidden": false,
+    "generator": "Unix Makefiles",
+    "binaryDir": "${sourceDir}/build/${presetName}",
+    "cacheVariables": {
+      "DEVICE": "stm32f407vg",
+      "CMAKE_BUILD_TYPE": "Debug",
+      "CMAKE_SKIP_INSTALL_ALL_DEPENDENCY": true,
+      "CMAKE_TOOLCHAIN_FILE": {
+        "type": "FILEPATH",
+        "value": "${sourceDir}/cmake/arm-none-eabi-gcc.cmake"
+      }
+    },
+    "warnings": {
+      "uninitialized": true,
+      "dev": true,
+      "deprecated": true
+    },
+    "architecture": {
+      "value": "unknown",
+      "strategy": "external"
+    }
+  }
+  ],
+  "buildPresets": [
+  {
+    "name": "default",
+    "hidden": false,
+    "configurePreset": "default",
+    "nativeToolOptions": [
+      "--no-print-directory"
+    ]
+  }
+  ]
+}

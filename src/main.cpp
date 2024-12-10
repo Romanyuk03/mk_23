@@ -73,7 +73,7 @@ void init_timer(void) {
     TIM_SMCR(TIM2) |= TIM_SMCR_SMS_GM;  // Режим захвата на фронте
 
     // Разрешаем прерывание от канала 1
-    TIM_DIER(TIM2) |= TIM_DIER_CC1IE; 
+    TIM_DIER(TIM2) |= TIM_DIER_CC1IE;   //разрешаем прерывание в самом таймере
     nvic_enable_irq(NVIC_TIM2_IRQ);     // Разрешаем прерывание в NVIC
 
     timer_enable_counter(TIM2);          // Запускаем таймер
@@ -81,10 +81,10 @@ void init_timer(void) {
 
 void read(void){
     char buffer[25];
-    tim2_isr();
+    //tim2_isr();
     
 
-    uint32_t n = snprintf(buffer, sizeof(buffer), "Pulse Width: %lu ", pulse_width);
+    uint32_t n = snprintf(buffer, sizeof(buffer), "Pulse Width: %lu\n\r ", pulse_width);
     usart_send_string(buffer,n);            // Отправка ширины импульса по UART
 
     gpio_toggle(GPIOD, GPIO14);           // Мигаем светодиодом на GPIOD14
